@@ -145,6 +145,38 @@ std::vector<uint32_t> Number::subLimbs(const std::vector<uint32_t>& a, const std
 	return result;
 }
 
+bool Number::operator==(const Number& other) const
+{
+	if (negative != other.negative) return false;
+	if (limbs.size() != other.limbs.size()) return false;
+
+	for (size_t i = 0; i < limbs.size(); ++i)
+	{
+		if (limbs[i] != other.limbs[i]) return false;
+	}
+
+	return true;
+}
+
+std::strong_ordering Number::operator<=>(const Number& other) const
+{
+	if (this == &other) return std::strong_ordering::equal;
+
+	int cmp = compare(*this, other);
+	if (cmp < 0) return std::strong_ordering::less;
+	if (cmp > 0) return std::strong_ordering::greater;
+
+	return std::strong_ordering::equal;
+}
+
+int Number::compare(const Number& a, const Number& b)
+{
+	if (a.negative != b.negative) return a.negative ? -1 : 1;
+
+	int cmp = compareAbs(a, b);
+	return a.negative ? -cmp : cmp;
+}
+
 int Number::compareAbs(const Number& a, const Number& b)
 {
 	if (a.limbs.size() != b.limbs.size()) return a.limbs.size() < b.limbs.size() ? -1 : 1;

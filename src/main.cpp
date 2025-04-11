@@ -9,13 +9,14 @@ int main(int argc, char **argv)
 	if (argc == 2)
 	{
 		std::string calculation(argv[1]);
-        std::istringstream stream(calculation);
-        std::string token;
-        std::vector<std::string> substrings;
+		std::istringstream stream(calculation);
+		std::string token;
+		std::vector<std::string> substrings;
 
-        while (std::getline(stream, token, ' ')) {
-            substrings.push_back(token);
-        }
+		while (std::getline(stream, token, ' '))
+		{
+			substrings.push_back(token);
+		}
 
 		if ((substrings.size() & 0b1) == 0) return 1;
 

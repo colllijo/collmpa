@@ -1,5 +1,6 @@
 #pragma once
 
+#include <compare>
 #include <cstdint>
 #include <ostream>
 #include <string>
@@ -20,6 +21,9 @@ public:
 	Number operator-(const Number& other) const;
 	Number& operator-=(const Number& other);
 
+	bool operator==(const Number& other) const;
+	std::strong_ordering operator<=>(const Number& other) const;
+
 	friend std::ostream& operator<<(std::ostream& os, const Number& number);
 
 private:
@@ -32,5 +36,6 @@ private:
 	void sub(const Number& other);
 	static std::vector<uint32_t> subLimbs(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b);
 
+	static int compare(const Number& a, const Number& b);
 	static int compareAbs(const Number& a, const Number& b);
 };
