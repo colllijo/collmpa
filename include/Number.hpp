@@ -21,6 +21,9 @@ public:
 	Number operator-(const Number& other) const;
 	Number& operator-=(const Number& other);
 
+	Number operator*(const Number& other) const;
+	Number& operator*=(const Number& other);
+
 	bool operator==(const Number& other) const;
 	std::strong_ordering operator<=>(const Number& other) const;
 
@@ -35,6 +38,8 @@ private:
 
 	void sub(const Number& other);
 	static std::vector<uint32_t> subLimbs(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b);
+
+	void mul(const Number& other);
 
 	static int compare(const Number& a, const Number& b);
 	static int compareAbs(const Number& a, const Number& b);

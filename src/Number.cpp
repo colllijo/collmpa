@@ -1,9 +1,12 @@
 #include "Number.hpp"
 
 #include <cstdint>
+#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "SSA.hpp"
 
 Number::Number() = default;
 Number::Number(const std::string& str)
@@ -143,6 +146,46 @@ std::vector<uint32_t> Number::subLimbs(const std::vector<uint32_t>& a, const std
 	while (!result.empty() && result.back() == 0) result.pop_back();
 
 	return result;
+}
+
+Number Number::operator*(const Number& other) const
+{
+	Number result = *this;
+	result *= other;
+
+	return result;
+}
+
+Number& Number::operator*=(const Number& other)
+{
+	mul(other);
+
+	return *this;
+}
+
+void Number::mul(const Number& other)
+{
+	std::cout << "Multipling" << std::endl;
+
+	static const int k = 32;
+	static const ModRing ring(k);
+	static const uint64_t root = 3;
+	static const uint64_t rootInv = modInverse(root, ring.mod);
+
+	std::vector<uint64_t> product = convolution(limbs, other.limbs, ring, root, rootInv);
+
+	limbs.clear();
+	uint64_t carry = 0;
+	for (uint64_t value: product)
+	{
+		value += carry;
+		limbs.push_back(uint32_t(value & 0xFFFFFFFF));
+		carry = value >> 32;
+	}
+	if (carry) limbs.push_back(uint32_t(carry));
+
+	while (!limbs.empty() && limbs.back() == 0) limbs.pop_back();
+	negative = negative != other.negative;
 }
 
 bool Number::operator==(const Number& other) const

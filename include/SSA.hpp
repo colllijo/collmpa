@@ -28,3 +28,5 @@ void ntt(std::vector<uint64_t>& a, const ModRing& ring, uint64_t w);
 void intt(std::vector<uint64_t>& a, const ModRing& ring, uint64_t w);
 
 uint64_t modInverse(uint64_t a, uint64_t m);
+
+std::vector<uint64_t> convolution(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b, const ModRing& ring, uint64_t root, uint64_t rootInv);

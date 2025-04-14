@@ -13,10 +13,12 @@ set(INCLUDE_DIR "include")
 set(SOURCES
   "${SOURCE_DIR}/main.cpp"
   "${SOURCE_DIR}/Number.cpp"
+  "${SOURCE_DIR}/SSA.cpp"
 )
 
 set(HEADERS
   "${INCLUDE_DIR}/Number.hpp"
+  "${INCLUDE_DIR}/SSA.hpp"
 )
 
 include_directories(${INCLUDE_DIR})

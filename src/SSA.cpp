@@ -109,3 +109,21 @@ uint64_t modInverse(uint64_t a, uint64_t m)
 
 	return t;
 }
+
+std::vector<uint64_t> convolution(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b, const ModRing& ring, uint64_t root, uint64_t rootInv)
+{
+	size_t n = 1;
+	while (n < a.size() + b.size()) n <<= 1;
+
+	std::vector<uint64_t> A(n, 0), B(n, 0);
+	for (size_t i = 0; i < a.size(); ++i) A[i] = a[i];
+	for (size_t i = 0; i < b.size(); ++i) B[i] = b[i];
+
+	ntt(A, ring, root);
+	ntt(B, ring, root);
+
+	for (size_t i = 0; i < n; ++i) A[i] = ring.mul(A[i], B[i]);
+
+	intt(A, ring, rootInv);
+	return A;
+}

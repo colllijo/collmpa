@@ -35,6 +35,10 @@ int main(int argc, char **argv)
 			{
 				result -= next;
 			}
+			else if (op == "*")
+			{
+				result *= next;
+			}
 			else
 			{
 				std::cerr << "Invalid operator: " << op << std::endl;
