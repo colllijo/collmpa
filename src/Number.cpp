@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cmath>
 #include <compare>
-#include <cstdint>
 #include <stdexcept>
 #include <tuple>
 
@@ -17,6 +16,68 @@ Number::Number() : digits(0), negative(false) {}
 Number::Number(const std::string& value)
 {
 	*this = fromString(value);
+}
+
+Number Number::operator+(const Number& other) const
+{
+	Number result = *this;
+	result += other;
+
+	return result;
+}
+
+Number& Number::operator+=(const Number& other)
+{
+	if (negative == other.negative)
+	{
+		digits = add(digits, other.digits);
+		return *this;
+	}
+
+	if (compareAbs(other) == std::strong_ordering::less)
+	{
+		digits = sub(other.digits, digits);
+		negative = other.negative;
+	}
+	else
+	{
+		digits = sub(digits, other.digits);
+	}
+
+	trimLeadingZeros();
+
+	return *this;
+}
+
+Number Number::operator-(const Number& other) const
+{
+	Number result = *this;
+	result -= other;
+
+	return result;
+}
+
+Number& Number::operator-=(const Number& other)
+{
+	if (negative != other.negative)
+	{
+		digits = add(digits, other.digits);
+		return *this;
+	}
+
+	if (compareAbs(other) == std::strong_ordering::less)
+	{
+		digits = sub(other.digits, digits);
+		negative = !other.negative;
+	}
+	else
+	{
+		digits = sub(digits, other.digits);
+	}
+
+	trimLeadingZeros();
+
+	return *this;
 }
 
 bool Number::operator==(const Number& other) const
@@ -37,6 +98,19 @@ std::strong_ordering Number::operator<=>(const Number& other) const
 	if (*this == other) return std::strong_ordering::equal;
 	if (negative != other.negative) return negative ? std::strong_ordering::less : std::strong_ordering::greater;
 
+	bool greater = compareAbs(other) == std::strong_ordering::greater;
+	if (negative) greater = !greater;
+
+	if (greater)
+		return std::strong_ordering::greater;
+	else
+		return std::strong_ordering::less;
+}
+
+std::strong_ordering Number::compareAbs(const Number& other) const
+{
+	if (*this == other) return std::strong_ordering::equal;
+
 	bool greater = false;
 	if (digits.size() != other.digits.size())
 	{
@@ -54,10 +128,10 @@ std::strong_ordering Number::operator<=>(const Number& other) const
 		}
 	}
 
-	if (negative) greater = !greater;
-
-	if (greater) return std::strong_ordering::greater;
-	else return std::strong_ordering::less;
+	if (greater)
+		return std::strong_ordering::greater;
+	else
+		return std::strong_ordering::less;
 }
 
 std::string Number::toString() const
@@ -116,6 +190,47 @@ Number Number::fromString(const std::string& value)
 	} while (!represenation.empty());
 
 	return result;
+}
+
+std::vector<uint32_t> Number::add(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const
+{
+	std::vector<uint32_t> result(std::max(a.size(), b.size()) + 1, 0);
+
+	uint64_t carry = 0;
+	for (size_t i = 0; i < result.size(); ++i)
+	{
+		if (i < a.size()) carry += a.at(i);
+		if (i < b.size()) carry += b.at(i);
+
+		result[i] = static_cast<uint32_t>(carry & 0xFFFFFFFF);
+		carry >>= 32;
+	}
+
+	return result;
+}
+
+std::vector<uint32_t> Number::sub(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const
+{
+	std::vector<uint32_t> result(std::max(a.size(), b.size()), 0);
+
+	uint64_t borrow = 0;
+	for (size_t i = 0; i < result.size(); ++i)
+	{
+		if (i < a.size()) borrow += a.at(i);
+		if (i < b.size()) borrow -= b.at(i);
+
+		result[i] = static_cast<uint32_t>(borrow & 0xFFFFFFFF);
+		borrow >>= 32;
+	}
+
+	return result;
+}
+
+void Number::trimLeadingZeros()
+{
+	while (!digits.empty() && digits.back() == 0) digits.pop_back();
+
+	if (digits.empty()) negative = false;
 }
 
 namespace
