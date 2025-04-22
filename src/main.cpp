@@ -8,7 +8,7 @@ int main(int, char **argv)
 	Number b = Number::fromString(argv[2]);
 
     auto result = a - b;
-    std::cout << argv[1] << " - " << argv[2] << " = " << result.toString() << "\n";
+    std::cout << argv[1] << " - " << argv[2] << " = " << result << "\n";
 
 	return 0;
 }

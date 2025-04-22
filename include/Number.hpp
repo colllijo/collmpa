@@ -2,6 +2,7 @@
 
 #include <compare>
 #include <cstdint>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -24,6 +25,8 @@ public:
 
 	std::string toString() const;
 	static Number fromString(const std::string& value);
+
+	friend std::ostream& operator<<(std::ostream& os, const Number& number);
 
 private:
 	std::vector<uint32_t> digits;

@@ -192,6 +192,11 @@ Number Number::fromString(const std::string& value)
 	return result;
 }
 
+std::ostream& operator<<(std::ostream& os, const Number& number)
+{
+	return os << number.toString();
+}
+
 std::vector<uint32_t> Number::add(const std::vector<uint32_t>& a, const std::vector<uint32_t>& b) const
 {
 	std::vector<uint32_t> result(std::max(a.size(), b.size()) + 1, 0);
