@@ -18,9 +18,11 @@ set(INCLUDE_DIR "include")
 
 set(SOURCES
   "${SOURCE_DIR}/main.cpp"
+  "${SOURCE_DIR}/Number.cpp"
 )
 
 set(HEADERS
+  "${INCLUDE_DIR}/Number.hpp"
 )
 
 include_directories(${INCLUDE_DIR})
